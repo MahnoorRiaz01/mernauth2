@@ -2,58 +2,64 @@ import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
-import axios from 'axios'
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const Login = () => {
+  const navigate = useNavigate();
 
-const navigate = useNavigate()
-
-const { backendUrl, setIsLoggedin, getUserData} = useContext(AppContext)
+  const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContext);
 
   const [state, setState] = useState("Sign Up");
-const [name, setName] = useState('')
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-const onSubmitHandler = async (e) => {
+  const onSubmitHandler = async (e) => {
     try {
-       e.preventDefault();
+      e.preventDefault();
 
-       axios.defaults.withCredentials = true
-       
-       if (state === 'Sign Up') {
-       const { data } = await axios.post(backendUrl + '/api/auth/register', { name, email, password})
+      axios.defaults.withCredentials = true;
+      
+      console.log("BACKEND_URL", backendUrl);
 
-        if (data.success) {
-            setIsLoggedin(true)
-            getUserData()
-            navigate('/')
-        }else {
-             toast.error(data.message)
-        }
-        
-       } else {
-        const { data } = await axios.post(backendUrl + '/api/auth/login', { email, password})
+      if (state === "Sign Up") {
+        const { data } = await axios.post(backendUrl + "/api/auth/register", {
+          name,
+          email,
+          password,
+        });
 
         if (data.success) {
-            setIsLoggedin(true)
-            getUserData()
-            navigate('/')
-        }else {
-             toast.error(error.message)
+          setIsLoggedin(true);
+          getUserData();
+          navigate("/");
+        } else {
+          toast.error(data.message);
         }
-       }
-    
+      } else {
+        const { data } = await axios.post(backendUrl + "/api/auth/login", {
+          email,
+          password,
+        });
+
+        if (data.success) {
+          setIsLoggedin(true);
+          getUserData();
+          navigate("/");
+        } else {
+          toast.error(error.message);
+        }
+      }
     } catch (error) {
-        toast.error(error.message)
+      toast.error(error.message);
     }
-}
-
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
-      <img onClick={() => navigate('/')}
+      <img
+        onClick={() => navigate("/")}
         src={assets.logo}
         alt=""
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
@@ -72,7 +78,9 @@ const onSubmitHandler = async (e) => {
           {state === "Sign Up" && (
             <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
               <img src={assets.person_icon} alt="" />
-              <input onChange={e => setName(e.target.value)} value={name}
+              <input
+                onChange={(e) => setName(e.target.value)}
+                value={name}
                 className="bg-transparent outline-none text-white"
                 type="text"
                 placeholder="Full Name"
@@ -83,7 +91,9 @@ const onSubmitHandler = async (e) => {
 
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.mail_icon} alt="" />
-            <input onChange={e => setEmail(e.target.value)} value={email}
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               className="bg-transparent outline-none text-white"
               type="email"
               placeholder="Email id"
@@ -92,7 +102,9 @@ const onSubmitHandler = async (e) => {
           </div>
           <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
             <img src={assets.lock_icon} alt="" />
-            <input onChange={e => setPassword(e.target.value)} value={password}
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
               className="bg-transparent outline-none text-white"
               type="password"
               placeholder="Password"
@@ -100,7 +112,10 @@ const onSubmitHandler = async (e) => {
             />
           </div>
 
-          <p onClick={() => navigate('/reset-password')} className="mb-4 text-indigo-500 cursor-pointer">
+          <p
+            onClick={() => navigate("/reset-password")}
+            className="mb-4 text-indigo-500 cursor-pointer"
+          >
             Forgot password?
           </p>
 
@@ -112,14 +127,20 @@ const onSubmitHandler = async (e) => {
         {state === "Sign Up" ? (
           <p className="text-gray-400 text-center text-xs mt-4">
             Already have an Account?{" "}
-            <span onClick={()=> setState('Login')} className="text-blue-400 cursor-pointer underline">
+            <span
+              onClick={() => setState("Login")}
+              className="text-blue-400 cursor-pointer underline"
+            >
               Login here
             </span>
           </p>
         ) : (
           <p className="text-gray-400 text-center text-xs mt-4">
             Don't have an Account?{" "}
-            <span onClick={()=> setState('Sign Up')}  className="text-blue-400 cursor-pointer underline">
+            <span
+              onClick={() => setState("Sign Up")}
+              className="text-blue-400 cursor-pointer underline"
+            >
               Sign up
             </span>
           </p>
